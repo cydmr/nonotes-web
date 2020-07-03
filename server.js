@@ -7,9 +7,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json({extended: true}));
-app.get('/', (req, res) => {
-  res.send('API running');
-});
+// app.get('/', (req, res) => {
+//   res.send('API running');
+// });
 
 app.use(
   '/api/categories/:cat_id/notes',
