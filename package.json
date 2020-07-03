@@ -4,8 +4,8 @@
   "description": "notes app",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "server": "nodemon server.js",
+    "start": "set NODE_ENV=production && node server.js",
+    "server": "set NODE_ENV=production && nodemon server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
