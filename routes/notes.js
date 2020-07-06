@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
 const {check, validationResult} = require('express-validator');
-const Note = require('./models/Note');
-const Category = require('./models/Category');
+const Note = require('../models/Note');
+const Category = require('../models/Category');
 const mongoose = require('mongoose');
+const auth = require('../middleware/auth');
 
 // @route   GET api/category/:cat_id/notes
 // @desc    Get all notes of a category
-// @access  Public
-router.get('/', async (req, res) => {
+// @access  Private
+router.get('/', auth, async (req, res) => {
   try {
     // const category = await Category.findById(req.params.cat_id);
     const category = req.category;
@@ -45,8 +46,8 @@ router.get('/', async (req, res) => {
 
 // @route   GET api/notes/:_id
 // @desc    Get note by id
-// @access  Public
-router.get('/:_id', async (req, res) => {
+// @access  Private
+router.get('/:_id', auth, async (req, res) => {
   try {
     const note = await Note.findById(req.params._id);
     if (!note) {
@@ -64,9 +65,10 @@ router.get('/:_id', async (req, res) => {
 
 // @route   POST /api/categories/:cat_id/notes
 // @desc    Add/Edit a note
-// @access  Public
+// @access  Private
 router.post(
   '/',
+  auth,
   [
     check('title', 'Title is required').not().isEmpty(),
     check('text', 'Text is required ').not().isEmpty(),
@@ -96,8 +98,8 @@ router.post(
 
 // @route   POST /api/categories/:cat_id/notes/quick-notes
 // @desc    Add a note to Quick Notes
-// @access  Public
-router.post('/:_id/quick', async (req, res) => {
+// @access  Private
+router.post('/:_id/quick', auth, async (req, res) => {
   try {
     const note = await Note.findOne({_id: req.params._id});
     if (!note) {
@@ -115,8 +117,8 @@ router.post('/:_id/quick', async (req, res) => {
 
 // @route   PUT api/notes
 // @desc    Edit a note
-// @access  Public
-router.put('/:_id', async (req, res) => {
+// @access  Private
+router.put('/:_id', auth, async (req, res) => {
   try {
     // const note = await Note.updateOne({ _id: req.params._id }, req.body);
     const note = await Note.findOne({_id: req.params._id});
@@ -164,8 +166,8 @@ router.put('/:_id', async (req, res) => {
 
 // @route   DELETE /api/categories/:cat_id/notes/:_id
 // @desc    Delete a note
-// @access  Public
-router.delete('/:_id', async (req, res) => {
+// @access  Private
+router.delete('/:_id', auth, async (req, res) => {
   try {
     // await Note.findOneAndDelete({_id: req.params._id}, async (error, result) => {
     //   if (error || !result) {

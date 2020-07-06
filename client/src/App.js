@@ -28,7 +28,7 @@ const App = () => {
             <Col style={{flex: 1}}>
               <Switch>
                 <Route exact path="/" component={Landing} />
-                <Route exact path="/categories/hizli-notlar/notes" component={QuickNotes} />
+                <Route exact path="/quick-notes" component={QuickNotes} />
                 <Route exact path="/categories/:category_id/notes/:page?/:_id?" component={Notes} />
                 <Route component={NotFound} />
               </Switch>

@@ -29,9 +29,11 @@ app.use(
       res.status(500).send('Server Error');
     }
   },
-  require('./notes')
+  require('./routes/notes')
 );
-app.use('/api/categories', require('./category'));
+app.use('/api/categories', require('./routes/category'));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/user', require('./routes/users'));
 
 const PORT = process.env.PORT || 4000;
 

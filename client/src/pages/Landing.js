@@ -20,7 +20,7 @@ export const Landing = inject('categoriesStore')(
             />
           </Spin>
         ) : (
-          <Redirect to="/categories/hizli-notlar/notes"></Redirect>
+          <Redirect to="/quick-notes"></Redirect>
         )}
       </React.Fragment>
     );

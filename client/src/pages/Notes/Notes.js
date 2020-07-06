@@ -23,8 +23,7 @@ export const Notes = inject(
 
     const handleDelete = async () => {
       console.log('delete');
-      if (await props.categoriesStore.delete({category_id}))
-        history.push('/categories/hizli-notlar/notes');
+      if (await props.categoriesStore.delete({category_id})) history.push('/quick-notes');
     };
 
     return (

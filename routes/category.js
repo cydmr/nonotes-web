@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const {check, validationResult} = require('express-validator');
-const Category = require('./models/Category');
-const Note = require('./models/Note');
+const Category = require('../models/Category');
+const Note = require('../models/Note');
+const auth = require('../middleware/auth');
 
 // @route   GET /api/categories
 // @desc    Get all categories
-// @access  Public
-router.get('/', async (req, res) => {
+// @access  Private
+router.get('/', auth, async (req, res) => {
   try {
     const categories = await Category.find().sort({date: -1}).select('-notes');
     res.json(categories);
@@ -19,8 +20,8 @@ router.get('/', async (req, res) => {
 
 // @route   GET /api/categories/quick
 // @desc    Get quicknotes
-// @access  Public
-router.get('/quick', async (req, res) => {
+// @access  Private
+router.get('/quick', auth, async (req, res) => {
   try {
     const quickNotes = await Note.find({isQuick: true});
     res.send(quickNotes);
@@ -33,8 +34,8 @@ router.get('/quick', async (req, res) => {
 
 // @route   GET /api/categories/:cat_id
 // @desc    Get all categories
-// @access  Public
-router.get('/:cat_id', async (req, res) => {
+// @access  Private
+router.get('/:cat_id', auth, async (req, res) => {
   try {
     const category = await Category.findById(req.params.cat_id);
     res.json(category);
@@ -46,8 +47,8 @@ router.get('/:cat_id', async (req, res) => {
 
 // @route   POST api/categories
 // @desc    Add/Edit a category
-// @access  Public
-router.post('/', [check('name', 'Name is required').not().isEmpty()], async (req, res) => {
+// @access  Private
+router.post('/', auth, [check('name', 'Name is required').not().isEmpty()], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({errors: errors.array()});
@@ -67,8 +68,8 @@ router.post('/', [check('name', 'Name is required').not().isEmpty()], async (req
 
 // @route   PUT api/categories/:cat_id
 // @desc    Edit a category
-// @access  Public
-router.put('/:cat_id', async (req, res) => {
+// @access  Private
+router.put('/:cat_id', auth, async (req, res) => {
   try {
     // const note = await Note.updateOne({ _id: req.params._id }, req.body);
     const category = await Category.findOne({_id: req.params.cat_id});
@@ -91,8 +92,8 @@ router.put('/:cat_id', async (req, res) => {
 
 // @route   DELETE api/categories/:cat_id
 // @desc    Delete a category
-// @access  Public
-router.delete('/:_id', async (req, res) => {
+// @access  Private
+router.delete('/:_id', auth, async (req, res) => {
   try {
     // await Note.findOneAndDelete({_id: req.params._id}, async (error, result) => {
     //   if (error || !result) {

@@ -10,6 +10,7 @@ import {
   PlusOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
+import {GrNotes} from 'react-icons/all';
 import {Redirect} from 'react-router';
 import {Modal, Row, Col} from 'antd';
 import {Input, MenuItem} from 'components';
@@ -86,9 +87,9 @@ export const CollapseMenu = inject('categoriesStore')(
               <Menu.Item
                 style={{color: 'purple', backgroundColor: 'light-blue'}}
                 key="1"
-                icon={<PieChartOutlined />}
+                icon={<GrNotes style={{color: 'yellow'}} />}
               >
-                <Link to={'/categories/hizli-notlar/notes'}> Quick Notes</Link>
+                <Link to={'/quick-notes'}> Quick Notes</Link>
               </Menu.Item>
 
               <Menu.Item
