@@ -4,12 +4,11 @@
   "description": "notes app",
   "main": "server.js",
   "scripts": {
-    "start": "set NODE_ENV='production' && node server.js",
-    "server": "set NODE_ENV='production' && nodemon server.js",
+    "start": "node server.js",
+    "server": "nodemon server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && run dev"
+    "test": "echo \"Error: no test specified\" && exit 1"
 
   },
   "author": "Ceycey",
