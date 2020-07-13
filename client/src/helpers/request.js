@@ -2,7 +2,7 @@ import {message} from 'antd';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 const host = 'http://localhost:4000';
-const host_heroku = 'https://mysterious-headland-65781.herokuapp.com/';
+const host_heroku = 'https://mysterious-headland-65781.herokuapp.com';
 
 export const request = {
   post: async (url, data, secured) => {
