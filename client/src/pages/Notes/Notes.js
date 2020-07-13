@@ -37,7 +37,6 @@ export const Notes = inject(
           </PrimaryButton>
         </div>
         <div>
-          <h1>{category_id}</h1>
           <DeleteOutlined style={{marginLeft: 7, color: 'red'}} onClick={handleDelete} />
         </div>
 
