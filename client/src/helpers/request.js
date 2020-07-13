@@ -1,14 +1,18 @@
 import {message} from 'antd';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 const host = 'http://localhost:4000';
 
 export const request = {
-  post: async (url, data) => {
+  post: async (url, data, secured) => {
+    if (secured && !cookies.get('token')) return false;
     try {
       const res = await fetch(host + url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
+          'x-auth-token': cookies.get('token') || '',
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
@@ -24,12 +28,15 @@ export const request = {
   },
 
   get: async url => {
+    if (!cookies.get('token')) return false;
     try {
       const res = await fetch(host + url, {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
+          'x-auth-token': cookies.get('token'),
+
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
       });
@@ -42,12 +49,15 @@ export const request = {
   },
 
   put: async (url, data) => {
+    if (!cookies.get('token')) return false;
     try {
       const res = await fetch(host + url, {
         method: 'PUT', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
+          'x-auth-token': cookies.get('token'),
+
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(data),
@@ -62,12 +72,15 @@ export const request = {
   },
 
   delete: async url => {
+    if (!cookies.get('token')) return false;
     try {
       const res = await fetch(host + url, {
         method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
+          'x-auth-token': cookies.get('token'),
+
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
       });

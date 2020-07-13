@@ -14,6 +14,9 @@ import {GrNotes} from 'react-icons/all';
 import {Redirect} from 'react-router';
 import {Modal, Row, Col} from 'antd';
 import {Input, MenuItem} from 'components';
+import * as Yup from 'yup';
+import {yupResolver} from '@hookform/resolvers';
+import {useForm, Controller} from 'react-hook-form';
 
 const {SubMenu} = Menu;
 const {confirm} = Modal;
@@ -29,25 +32,11 @@ export const CollapseMenu = inject('categoriesStore')(
     };
 
     const handleDelete = category_id => {
-      console.log('delete');
       props.categoriesStore.delete({category_id});
     };
 
-    const [categoryForm, setCategoryForm] = useState({
-      name: '',
-      description: '',
-    });
-
-    const {name, description} = categoryForm;
-
-    const onChange = e => {
-      console.log({e, target: e.target.name});
-      setCategoryForm({...categoryForm, [e.target.name]: e.target.value});
-    };
-
-    const onSubmit = async () => {
-      const category = categoryForm;
-      if (await props.categoriesStore.add({data: category})) handleCancel();
+    const onSubmit = async data => {
+      if (await props.categoriesStore.add({data})) handleCancel();
     };
 
     useEffect(() => {
@@ -59,9 +48,19 @@ export const CollapseMenu = inject('categoriesStore')(
     };
 
     const handleCancel = () => {
+      console.log('rest');
       setVisible(false);
-      setCategoryForm({name: '', description: ''});
+      reset();
     };
+
+    const schema = Yup.object().shape({
+      name: Yup.string().required('Name is required'),
+    });
+
+    const {handleSubmit, errors, control, reset, watch} = useForm({
+      resolver: yupResolver(schema),
+    });
+    // console.log(watch());
 
     // useEffect(() => {
     //   if (_id) {
@@ -133,27 +132,32 @@ export const CollapseMenu = inject('categoriesStore')(
                 </SubMenu>
               </SubMenu> */}
             </Menu>
+
             <Modal
               visible={visible}
               title={'Create Category'}
               onCancel={handleCancel}
-              onOk={onSubmit}
+              onOk={handleSubmit(onSubmit)}
             >
-              <Input
-                placeholder="Name"
-                name="name"
-                value={name}
-                defaultValue={name}
-                onChange={onChange}
-              />
+              {visible && (
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <Controller
+                    as={<Input name="name" placeholder="Name" errors={errors} />}
+                    name="name"
+                    control={control}
+                    defaultValue=""
+                  />
 
-              <Input
-                placeholder="Description"
-                name="description"
-                value={description}
-                defaultValue={description}
-                onChange={onChange}
-              />
+                  <Controller
+                    as={<Input name="description" placeholder="Description" errors={errors} />}
+                    name="description"
+                    control={control}
+                    defaultValue=""
+                  />
+
+                  <input type="submit" />
+                </form>
+              )}
             </Modal>
           </div>
         ) : (

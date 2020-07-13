@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-// @route   POST api/user
+// @route   POST api/register
 // @desc    Create user
 // @access  Public
 router.post(
@@ -33,15 +33,7 @@ router.post(
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       await user.save();
-      const payload = {
-        user: {
-          _id: user._id,
-        },
-      };
-      jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 360000}, (err, token) => {
-        if (err) throw err;
-        res.send({token});
-      });
+      res.status(200).json({data: {msg: 'SUCCESS'}});
     } catch (e) {
       console.log(e.message);
       res.status(500).send(e);

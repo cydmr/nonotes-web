@@ -1,7 +1,9 @@
 import {Input as AntdInput} from 'antd';
 import React, {useState, useEffect} from 'react';
+import {Alert} from 'antd';
 
 export const Input = props => {
+  const errors = props.errors;
   const [top, setTop] = useState(props.defaultValue ? 0 : 30);
   const handleFocus = () => setTop(0);
 
@@ -41,7 +43,7 @@ export const Input = props => {
         {props.placeholder}
       </span>
       <AntdInput
-        {...props}
+        // {...props}
         style={{marginTop: 5, marginBottom: 5, ...props.style}}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -49,6 +51,8 @@ export const Input = props => {
         prefix={props.icon}
         placeholder=""
       />
+
+      {errors[props.name] && <Alert message={errors[props.name].message} type="error" showIcon />}
     </label>
   );
 };

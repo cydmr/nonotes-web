@@ -10,8 +10,8 @@ const auth = require('../middleware/auth');
 // @access  Private
 router.get('/', auth, async (req, res) => {
   try {
-    const categories = await Category.find().sort({date: -1}).select('-notes');
-    res.json(categories);
+    const categories = await Category.find({user: req.user}).sort({date: -1});
+    res.json({data: categories});
   } catch (error) {
     console.log(e.message);
     res.status(500).send('Server Error');
@@ -23,8 +23,8 @@ router.get('/', auth, async (req, res) => {
 // @access  Private
 router.get('/quick', auth, async (req, res) => {
   try {
-    const quickNotes = await Note.find({isQuick: true});
-    res.send(quickNotes);
+    const quickNotes = await Note.find({isQuick: true, user: req.user});
+    res.send({data: quickNotes});
   } catch (error) {
     console.log(error.message);
 
@@ -37,8 +37,8 @@ router.get('/quick', auth, async (req, res) => {
 // @access  Private
 router.get('/:cat_id', auth, async (req, res) => {
   try {
-    const category = await Category.findById(req.params.cat_id);
-    res.json(category);
+    const category = await Category.find({_id: req.params.cat_id, user: req.user});
+    res.json({data: category[0]});
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Server Error');
@@ -46,20 +46,20 @@ router.get('/:cat_id', auth, async (req, res) => {
 });
 
 // @route   POST api/categories
-// @desc    Add/Edit a category
+// @desc    Add a category
 // @access  Private
 router.post('/', auth, [check('name', 'Name is required').not().isEmpty()], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({errors: errors.array()});
   }
-  const {name, description, notes} = req.body;
-
+  const {name, description} = req.body;
+  // console.log(req.user);
   try {
-    const category = new Category({name, description, notes});
+    const category = new Category({name, description, user: req.user});
 
     await category.save();
-    res.send(category);
+    res.send({data: category});
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Server Error');
@@ -75,11 +75,11 @@ router.put('/:cat_id', auth, async (req, res) => {
     const category = await Category.findOne({_id: req.params.cat_id});
     if (!category) res.status(404).json({msg: 'Category not found'});
     else {
-      Object.entries(req.body).map(([key, value]) => key !== 'cat_id' && (category[key] = value));
+      Object.entries(req.body).map(([key, value]) => key !== '_id' && (category[key] = value));
       const updated = await category.save();
       // const cat = category.notes.map(note => note._id).filter(id => req.params._id)
 
-      res.send(updated);
+      res.send({data: updated});
     }
   } catch (error) {
     console.log(error.message);
@@ -93,7 +93,7 @@ router.put('/:cat_id', auth, async (req, res) => {
 // @route   DELETE api/categories/:cat_id
 // @desc    Delete a category
 // @access  Private
-router.delete('/:_id', auth, async (req, res) => {
+router.delete('/:cat_id', auth, async (req, res) => {
   try {
     // await Note.findOneAndDelete({_id: req.params._id}, async (error, result) => {
     //   if (error || !result) {
@@ -107,11 +107,11 @@ router.delete('/:_id', auth, async (req, res) => {
     //     res.json({msg: `deleted ${result}`});
     //   }
     // });
-    const category = await Category.findById({_id: req.params._id});
+    const category = await Category.findById({_id: req.params.cat_id});
     if (category) {
-      await Category.deleteOne({_id: req.params._id});
-      await Note.deleteMany({category: req.params._id});
-      res.status(200).json({msg: 'Deleted'});
+      await Category.deleteOne({_id: req.params.cat_id});
+      await Note.deleteMany({category: req.params.cat_id});
+      res.status(200).json({data: {msg: 'Deleted'}});
     } else {
       res.status(500).json({msg: 'Category could not delete'});
     }

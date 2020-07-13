@@ -7,7 +7,6 @@ import {DesktopOutlined, DeleteOutlined} from '@ant-design/icons';
 export const MenuItem = props => {
   const {data} = props;
   const handleDelete = () => {
-    console.log('delete on item');
     props.onDelete(data._id);
   };
   return (

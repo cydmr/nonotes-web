@@ -15,17 +15,13 @@ export default class quickNotesStore {
 
   read() {
     this._list = new observable.map();
-    request.get(`/api/categories/quick`).then(notes => {
+    request.get(`/api/categories/quick`).then(res => {
       // console.log(categories);
-      console.log(this.state);
-      if (!notes) {
-        this.state = 'done';
-      }
-      notes.forEach(i => this._list.set(i._id, i));
-      console.log('requesting categories for collapse menu');
+      if (!res.data) return;
+
+      res.data.forEach(i => this._list.set(i._id, i));
       //setAllNotes(categories);
       this.state = 'done';
-      console.log(this.state);
     });
   }
 

@@ -20,6 +20,11 @@ const NoteSchema = new mongoose.Schema({
     required: true,
     ref: 'category',
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'user',
+  },
 
   date: {type: Date, default: Date.now},
 });

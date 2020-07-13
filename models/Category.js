@@ -10,17 +10,23 @@ const CategorySchema = new mongoose.Schema({
     type: String,
   },
 
-  notes: [
-    {
-      _id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'note',
-      },
-      name: {
-        type: String,
-      },
-    },
-  ],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'user',
+  },
+
+  // notes: [
+  //   {
+  //     _id: {
+  //       type: mongoose.Schema.Types.ObjectId,
+  //       ref: 'note',
+  //     },
+  //     name: {
+  //       type: String,
+  //     },
+  //   },
+  // ],
 
   date: {type: Date, default: Date.now},
 });

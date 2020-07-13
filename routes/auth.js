@@ -15,7 +15,7 @@ router.get('/', auth, async (req, res) => {
     const user = await User.findById({_id: req.user._id}).select('-password');
 
     console.log('connected');
-    res.json(user);
+    res.json({data: user});
   } catch (e) {
     res.status(500).send('Server Error');
   }
@@ -52,10 +52,11 @@ router.post(
           _id: user._id,
         },
       };
-
-      jwt.sign(payload, config.get('jwtSecret'), {expiresIn: 360000}, (err, token) => {
+      const expires = 600;
+      jwt.sign(payload, config.get('jwtSecret'), {expiresIn: expires}, (err, token) => {
         if (err) throw err;
-        res.json({token});
+        console.log({token, expires});
+        res.json({data: {token, expires}});
       });
     } catch (e) {
       console.log(e.message);

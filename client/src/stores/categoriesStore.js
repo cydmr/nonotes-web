@@ -15,17 +15,12 @@ export default class categoriesStore {
 
   read() {
     this._list = new observable.map();
-    request.get(`/api/categories`).then(categories => {
-      // console.log(categories);
-      console.log(this.state);
-      if (!categories) {
-        this.state = 'done';
-      }
-      categories.forEach(i => this._list.set(i._id, i));
-      console.log('requesting categories for collapse menu');
+    request.get(`/api/categories`).then(res => {
+      if (!res.data) return;
+
+      (res.data || []).forEach(i => this._list.set(i._id, i));
       //setAllNotes(categories);
       this.state = 'done';
-      console.log(this.state);
     });
   }
   get list() {
@@ -33,18 +28,21 @@ export default class categoriesStore {
   }
 
   add({data}) {
-    return request.post(`/api/categories`, data).then(category => {
-      if (category) {
-        this._list.set(category._id, category);
+    return request.post(`/api/categories`, data).then(res => {
+      if (!res.data) return;
+
+      if (res.data) {
+        this._list.set(res.data._id, res.data);
       }
-      return category;
+      return res.data;
     });
   }
 
   update({category_id = null, data}) {
-    request.put(`/api/categories/${category_id}`, data).then(category => {
-      if (category) {
-        this._list.set(category._id, category);
+    request.put(`/api/categories/${category_id}`, data).then(res => {
+      if (!res.data) return;
+      if (res.data) {
+        this._list.set(res.data._id, res.data);
       }
     });
   }

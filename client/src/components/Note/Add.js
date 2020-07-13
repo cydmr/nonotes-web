@@ -4,6 +4,9 @@ import {inject, observer} from 'mobx-react';
 import {request} from 'helpers/request';
 import {Modal} from 'antd';
 import {Input} from 'components/materials/Input';
+import * as Yup from 'yup';
+import {yupResolver} from '@hookform/resolvers';
+import {useForm, Controller} from 'react-hook-form';
 
 export const Add = inject('notesStore')(
   observer(props => {
@@ -12,8 +15,8 @@ export const Add = inject('notesStore')(
     const category_id = props.category_id;
     const history = useHistory();
     const [noteForm, setNoteForm] = useState({
-      title: item._id ? item.title : '',
-      text: item._id ? item.text : '',
+      title: _id ? item.title : '',
+      text: _id ? item.text : '',
     });
 
     const {title, text} = noteForm;
@@ -31,61 +34,68 @@ export const Add = inject('notesStore')(
       if (item._id) setNoteForm({title: item.title, text: item.text});
     }, [item]);
 
-    const onChange = e => {
-      setNoteForm({...noteForm, [e.target.name]: e.target.value});
-      //console.log(noteForm);
-    };
-
     const handleCancel = () => {
       history.push(`/categories/${category_id}/notes`);
     };
 
-    const onSubmit = async e => {
-      e.preventDefault();
-      const note = noteForm;
-
+    const onSubmit = async data => {
       if (_id) {
-        console.log(category_id);
-        props.notesStore.update({category_id: category_id, note_id: _id, data: note});
+        props.notesStore.update({category_id: category_id, note_id: _id, data});
         history.push(`/categories/${category_id}/notes`);
-      } else {
-        console.log(category_id);
 
-        props.notesStore.add({category_id: category_id, data: note});
+        handleCancel();
+      } else {
+        props.notesStore.add({category_id: category_id, data});
         history.push(`/categories/${category_id}/notes`);
       }
     };
 
+    const schema = Yup.object().shape({
+      title: Yup.string().required('Title is required'),
+
+      text: Yup.string().required('Text is required'),
+    });
+
+    const {handleSubmit, errors, control, reset, watch} = useForm({
+      resolver: yupResolver(schema),
+    });
+
     return (
       <Modal
         visible={true}
-        onOk={onSubmit}
+        onOk={handleSubmit(onSubmit)}
         onCancel={handleCancel}
         okText={_id ? 'Edit Note' : 'Add Note'}
       >
-        <h1>
-          {_id ? 'Edit ' : 'Add '} Note {item.title}
-        </h1>
+        <h1>{_id ? 'Edit ' + item.title : 'Add Note '}</h1>
         <div>
-          {' '}
-          <Input
-            placeholder="Title"
-            name="title"
-            value={title}
-            defaultValue={item.title}
-            onChange={e => {
-              onChange(e);
-            }}
-          />
-          <Input
-            placeholder="Text"
-            name="text"
-            value={text}
-            defaultValue={item.text}
-            onChange={e => {
-              onChange(e);
-            }}
-          />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+              as={
+                <Input
+                  name="title"
+                  placeholder="Title"
+                  errors={errors}
+                  defaultValue={_id ? title : ''}
+                />
+              }
+              name="title"
+              control={control}
+            />
+
+            <Controller
+              as={
+                <Input
+                  name="text"
+                  placeholder="Text"
+                  errors={errors}
+                  defaultValue={_id ? text : ''}
+                />
+              }
+              name="text"
+              control={control}
+            />
+          </form>
         </div>
       </Modal>
     );

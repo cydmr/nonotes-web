@@ -2,14 +2,14 @@ import {inject, observer} from 'mobx-react';
 import React, {Fragment, useEffect, useState} from 'react';
 import {Link, useParams, useHistory} from 'react-router-dom';
 import {Add, Note, PrimaryButton} from 'components';
-import {request} from 'helpers/request';
 import {Row, Col, Button} from 'antd';
 import {DeleteOutlined} from '@ant-design/icons';
 
 export const Notes = inject(
   'notesStore',
   'categoriesStore',
-  'quickNotesStore'
+  'quickNotesStore',
+  'authStore'
 )(
   observer(props => {
     const {_id, page, category_id} = useParams();
@@ -22,12 +22,20 @@ export const Notes = inject(
     }, [props.notesStore, category_id]);
 
     const handleDelete = async () => {
-      console.log('delete');
       if (await props.categoriesStore.delete({category_id})) history.push('/quick-notes');
     };
 
     return (
       <Fragment>
+        <div>
+          <PrimaryButton
+            onClick={() => {
+              props.authStore.logout();
+            }}
+          >
+            LOGOUT
+          </PrimaryButton>
+        </div>
         <div>
           <h1>{category_id}</h1>
           <DeleteOutlined style={{marginLeft: 7, color: 'red'}} onClick={handleDelete} />

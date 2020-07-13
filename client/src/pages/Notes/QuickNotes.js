@@ -2,10 +2,12 @@ import {inject, observer} from 'mobx-react';
 import React, {Fragment, useEffect, useState} from 'react';
 import {Link, useParams, useHistory} from 'react-router-dom';
 import {Add, Note, PrimaryButton} from 'components';
-import {request} from 'helpers/request';
 import {Row, Col, Button} from 'antd';
 
-export const QuickNotes = inject('quickNotesStore')(
+export const QuickNotes = inject(
+  'quickNotesStore',
+  'authStore'
+)(
   observer(props => {
     const {state, list} = props.quickNotesStore;
 
@@ -15,6 +17,16 @@ export const QuickNotes = inject('quickNotesStore')(
 
     return (
       <Fragment>
+        <div>
+          <PrimaryButton
+            onClick={() => {
+              props.authStore.logout();
+            }}
+          >
+            LOGOUT
+          </PrimaryButton>
+        </div>
+
         <div>
           <h1>Quick Notes</h1>
         </div>

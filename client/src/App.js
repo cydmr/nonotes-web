@@ -1,40 +1,23 @@
 import React, {Fragment} from 'react';
 import './App.css';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import {Notes} from 'pages/Notes/Notes';
-import {QuickNotes} from 'pages/Notes/QuickNotes';
+
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import {Drawer, Button, Row, Col} from 'antd';
-import {LeftMenu, CollapseMenu} from 'components';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+
 import {Provider} from 'mobx-react';
 import {stores} from 'stores';
-import {Landing} from 'pages/Landing';
-
+import {routing} from './routing';
 //axios.defaults.proxy.port = 4000;
-const NotFound = () => {
-  return <div>404 NotFound</div>;
-};
 
 const App = () => {
+  //token var mı cookielerde
+  // varsa qucik-notes vs gitsin
   return (
     <Provider {...stores}>
       <Router>
-        <Fragment>
-          <Row>
-            <Col>
-              <CollapseMenu />
-            </Col>
-
-            <Col style={{flex: 1}}>
-              <Switch>
-                <Route exact path="/" component={Landing} />
-                <Route exact path="/quick-notes" component={QuickNotes} />
-                <Route exact path="/categories/:category_id/notes/:page?/:_id?" component={Notes} />
-                <Route component={NotFound} />
-              </Switch>
-            </Col>
-          </Row>
-        </Fragment>
+        <Switch>
+          <Route path="/" component={routing} />
+        </Switch>
       </Router>
     </Provider>
   );

@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.10.3",
+    "@hookform/error-message": "^0.0.2",
+    "@hookform/resolvers": "^0.0.5",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -17,10 +19,14 @@
     "react-app-rewire-hot-loader": "^2.0.1",
     "react-app-rewired": "^2.1.6",
     "react-dom": "^16.13.1",
+    "react-hook-form": "6.0.1",
+    "react-hook-form-input": "^1.1.10",
     "react-icons": "^3.10.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "universal-cookie": "^4.0.3",
+    "yup": "^0.29.1"
   },
   "scripts": {
     "start": "react-scripts start",

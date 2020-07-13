@@ -17,48 +17,51 @@ export default class notesStore {
     if (_id) {
       this.state = 'getting';
       request.get(`/api/categories/${category_id}/notes/${_id}/`).then(res => {
-        this._item = res;
+        if (!res.data) return;
+        console.log(res.data);
+        this._item = res.data;
         this.state = 'done';
       });
     } else {
       this._list = new observable.map();
       this.state = 'listing';
-      request.get(`/api/categories/${category_id}/notes`).then(notes => {
-        notes.forEach(i => this._list.set(i._id, i));
+      request.get(`/api/categories/${category_id}/notes`).then(res => {
+        if (!res.data) return;
+
+        res.data.forEach(i => this._list.set(i._id, i));
         this.state = 'done';
       });
     }
   }
   add({category_id = null, data}) {
-    request.post(`/api/categories/${category_id}/notes`, data).then(note => {
-      console.log(note);
-      if (note) {
-        this._list.set(note._id, note);
+    request.post(`/api/categories/${category_id}/notes`, data).then(res => {
+      if (res.data) {
+        this._list.set(res.data._id, res.data);
       }
     });
   }
 
   update({category_id = null, note_id, data}) {
-    request.put(`/api/categories/${category_id}/notes/${note_id}`, data).then(note => {
-      if (note) {
-        this._list.set(note._id, note);
+    request.put(`/api/categories/${category_id}/notes/${note_id}`, data).then(res => {
+      if (res.data) {
+        this._list.set(res.data._id, res.data);
       }
     });
   }
 
   delete({category_id = null, note_id}) {
     request.delete(`/api/categories/${category_id}/notes/${note_id}`).then(res => {
-      if (res) {
+      if (res.data) {
         this._list.delete(note_id);
       }
     });
   }
 
   quick({category_id = null, note_id}) {
-    return request.post(`/api/categories/${category_id}/notes/${note_id}/quick`, {}).then(note => {
-      if (note) {
-        this._list.set(note_id, note);
-        return note;
+    return request.post(`/api/categories/${category_id}/notes/${note_id}/quick`, {}).then(res => {
+      if (res.data) {
+        this._list.set(note_id, res.data);
+        return res.data;
         // note.isQuick
         //   ? this.stores.quickNotesStore.add(note)
         //   : this.stores.quickNotesStore.delete(note);

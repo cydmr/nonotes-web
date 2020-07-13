@@ -15,7 +15,9 @@ router.get('/', auth, async (req, res) => {
     const category = req.category;
     // console.log({id: category.notes._id, name: category.notes.name});
 
-    const notes = await Note.find({_id: {$in: category.notes}}).sort({date: 1});
+    const notes = await Note.find({category: category._id, user: req.user}).sort({date: 1});
+
+    // const notes = await Note.find({_id: {$in: category.notes}}).sort({date: 1});
 
     // console.log(no_notes);
     // const promises = category.notes.map(id =>
@@ -32,7 +34,7 @@ router.get('/', auth, async (req, res) => {
     //   console.log(note);
     // });
     // category.notes;
-    res.json(notes);
+    res.json({data: notes});
     // res.json({
     //   category: category.name,
     //   description: category.description,
@@ -44,16 +46,16 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// @route   GET api/notes/:_id
+// @route   GET api/categories/:cat_id/notes/:_id
 // @desc    Get note by id
 // @access  Private
 router.get('/:_id', auth, async (req, res) => {
   try {
-    const note = await Note.findById(req.params._id);
+    const note = await Note.find({_id: req.params._id, user: req.user});
     if (!note) {
       return res.status(404).json({msg: 'Note not found'});
     }
-    res.json(note);
+    res.json({data: note[0]});
   } catch (error) {
     console.log(error.message);
     if (error.kind === 'ObjectID') {
@@ -82,13 +84,11 @@ router.post(
 
     const {title, text} = req.body;
     try {
-      const note = new Note({title, text, category: req.category._id});
+      const note = new Note({title, text, category: req.category._id, user: req.user});
       // console.log(note);
       await note.save();
 
-      req.category.notes.push({_id: note._id});
-      req.category.save();
-      res.send(note);
+      res.send({data: note});
     } catch (error) {
       console.log(error.message);
       res.status(500).send('Server Error');
@@ -96,32 +96,32 @@ router.post(
   }
 );
 
-// @route   POST /api/categories/:cat_id/notes/quick-notes
-// @desc    Add a note to Quick Notes
+// @route   POST /api/categories/:cat_id/notes/:_id/quick
+// @desc    Add/Remove a note to/froms Quick Notes
 // @access  Private
 router.post('/:_id/quick', auth, async (req, res) => {
   try {
-    const note = await Note.findOne({_id: req.params._id});
+    const note = await Note.findOne({_id: req.params._id, user: req.user});
     if (!note) {
       return res.status(404).json({msg: 'can not add to Quick Notes'});
     }
 
     note.isQuick = !note.isQuick;
     await note.save();
-    res.send(note);
+    res.send({data: note});
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Server Error');
   }
 });
 
-// @route   PUT api/notes
+// @route   PUT api/categories/:cat_id/notes/:_id
 // @desc    Edit a note
 // @access  Private
 router.put('/:_id', auth, async (req, res) => {
   try {
     // const note = await Note.updateOne({ _id: req.params._id }, req.body);
-    const note = await Note.findOne({_id: req.params._id});
+    const note = await Note.findOne({_id: req.params._id, user: req.user});
     if (!note) {
       return res.status(404).json({msg: 'Note not found'});
     } else {
@@ -129,7 +129,7 @@ router.put('/:_id', auth, async (req, res) => {
       const updated = await note.save();
       // const cat = category.notes.map(note => note._id).filter(id => req.params._id)
 
-      res.send(updated);
+      res.send({data: updated});
 
       // const updated = await Note.findByIdAndUpdate(req.params._id, req.body, { lean: true });
       // const updated = await Note.findOne({ _id: req.params._id });
@@ -181,14 +181,11 @@ router.delete('/:_id', auth, async (req, res) => {
     //     res.json({msg: `deleted ${result}`});
     //   }
     // });
-    await Note.deleteOne({_id: req.params._id}, async (error, result) => {
+    await Note.deleteOne({_id: req.params._id, user: req.user}, async (error, result) => {
       if (error || result.deletedCount === 0) {
         res.status(500).json({msg: 'Note could not delete'});
       } else {
-        const deleteIndex = req.category.notes.map(i => i._id).indexOf(req.params._id);
-        if (deleteIndex > -1) req.category.notes.splice(deleteIndex, 1);
-        await req.category.save();
-        res.json({msg: `deleted ${req.params._id}`, count: result.deletedCount});
+        res.json({data: {msg: `deleted ${req.params._id}`, count: result.deletedCount}});
       }
     });
   } catch (error) {
