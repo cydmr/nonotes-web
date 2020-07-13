@@ -1,7 +1,7 @@
 import {message} from 'antd';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
-const host = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:4000';
+const host = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8989';
 
 export const request = {
   post: async (url, data, secured) => {

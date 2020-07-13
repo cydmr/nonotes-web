@@ -53,11 +53,16 @@ router.post(
         },
       };
       const expires = 600;
-      jwt.sign(payload, config.get('jwtSecret'), {expiresIn: expires}, (err, token) => {
-        if (err) throw err;
-        console.log({token, expires});
-        res.json({data: {token, expires}});
-      });
+      jwt.sign(
+        payload,
+        process.env.jwtSecret || config.get('jwtSecret'),
+        {expiresIn: expires},
+        (err, token) => {
+          if (err) throw err;
+          console.log({token, expires});
+          res.json({data: {token, expires}});
+        }
+      );
     } catch (e) {
       console.log(e.message);
       res.status(500).send(e);
