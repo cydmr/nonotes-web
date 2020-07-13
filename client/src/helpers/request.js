@@ -2,13 +2,12 @@ import {message} from 'antd';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 const host = 'http://localhost:4000';
-const host_heroku = 'https://mysterious-headland-65781.herokuapp.com';
 
 export const request = {
   post: async (url, data, secured) => {
     if (secured && !cookies.get('token')) return false;
     try {
-      const res = await fetch(host_heroku + url, {
+      const res = await fetch(host + url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
@@ -31,7 +30,7 @@ export const request = {
   get: async url => {
     if (!cookies.get('token')) return false;
     try {
-      const res = await fetch(host_heroku + url, {
+      const res = await fetch(host + url, {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
@@ -52,7 +51,7 @@ export const request = {
   put: async (url, data) => {
     if (!cookies.get('token')) return false;
     try {
-      const res = await fetch(host_heroku + url, {
+      const res = await fetch(host + url, {
         method: 'PUT', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
@@ -75,7 +74,7 @@ export const request = {
   delete: async url => {
     if (!cookies.get('token')) return false;
     try {
-      const res = await fetch(host_heroku + url, {
+      const res = await fetch(host + url, {
         method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors',
         headers: {
