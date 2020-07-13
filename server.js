@@ -2,6 +2,7 @@ const express = require('express');
 const connectDB = require('./config/db');
 var cors = require('cors');
 const Category = require('./models/Category');
+const path = require('path');
 
 const app = express();
 
@@ -34,6 +35,16 @@ app.use(
 app.use('/api/categories', require('./routes/category'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/register', require('./routes/users'));
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('client/build'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 const PORT = process.env.PORT || 4000;
 
