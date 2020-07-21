@@ -54,7 +54,7 @@ export const Notes = inject(
           <PrimaryButton to={`/categories/${category_id}/notes/add`} text="Add Note" />
         </div>
 
-        {state === 'done' && (
+        {state !== 'listing' && (
           <Row
             gutter={16}
             style={{
@@ -68,6 +68,9 @@ export const Notes = inject(
                 <Note note={i}></Note>
               </Col>
             ))}
+            <Col span={8} key={'add-note'}>
+              <div>Add +</div>
+            </Col>
           </Row>
         )}
       </Fragment>

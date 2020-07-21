@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {inject, observer} from 'mobx-react';
 import {Menu, Button, Divider} from 'antd';
 import {
@@ -9,8 +9,8 @@ import {
   DesktopOutlined,
   PlusOutlined,
   DeleteOutlined,
+  PushpinOutlined,
 } from '@ant-design/icons';
-import {GrNotes} from 'react-icons/all';
 import {Redirect} from 'react-router';
 import {Modal, Row, Col} from 'antd';
 import {Input, MenuItem} from 'components';
@@ -26,6 +26,8 @@ export const CollapseMenu = inject('categoriesStore')(
     const [collapsed, setcollapse] = useState(false);
     const {list, state} = props.categoriesStore;
     const [visible, setVisible] = useState(false);
+
+    const history = useHistory();
 
     const toggleCollapsed = () => {
       setcollapse(!collapsed);
@@ -77,18 +79,21 @@ export const CollapseMenu = inject('categoriesStore')(
             </Button>
 
             <Menu
-              defaultSelectedKeys={['1']}
-              defaultOpenKeys={['sub1']}
+              // defaultSelectedKeys={['1']}
+              // defaultOpenKeys={['sub1']}
               mode="inline"
               theme="light"
               inlineCollapsed={collapsed}
             >
               <Menu.Item
-                style={{color: 'purple', backgroundColor: 'light-blue'}}
-                key="1"
-                icon={<GrNotes style={{color: 'yellow'}} />}
+                // style={{color: 'purple', backgroundColor: 'light-blue'}}
+                // key="1"
+                onClick={() => {
+                  history.push('/quick-notes');
+                }}
+                icon={<PushpinOutlined style={{color: 'purple'}} />}
               >
-                <Link to={'/quick-notes'}> Quick Notes</Link>
+                Quick Notes
               </Menu.Item>
 
               <Menu.Item

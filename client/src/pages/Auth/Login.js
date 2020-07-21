@@ -6,6 +6,7 @@ import {Input, PrimaryButton} from 'components';
 import * as Yup from 'yup';
 import {request} from 'helpers/request';
 import {useHistory} from 'react-router';
+import {Alert} from 'antd';
 
 export const Login = inject(
   'categoriesStore',
@@ -25,14 +26,20 @@ export const Login = inject(
       resolver: yupResolver(schema),
     });
     const onSubmit = async data => {
-      props.authStore.login(data);
+      const res = props.authStore.login(data);
+      if (res) {
+        return <Alert>hoho</Alert>;
+      }
       history.push('/');
     };
 
     //ref={register({})}
     return (
       <React.Fragment>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          style={{marginRight: /50%/, marginLeft: /30%/, marginTop: /5%/}}
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <Controller
             as={<Input name="email" placeholder="E-Mail" errors={errors} />}
             name="email"
@@ -40,7 +47,7 @@ export const Login = inject(
           />
 
           <Controller
-            as={<Input name="password" placeholder="Password" errors={errors} />}
+            as={<Input name="password" placeholder="Password" errors={errors} type={'password'} />}
             name="password"
             control={control}
           />

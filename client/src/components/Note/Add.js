@@ -4,24 +4,27 @@ import {inject, observer} from 'mobx-react';
 import {request} from 'helpers/request';
 import {Modal} from 'antd';
 import {Input} from 'components/materials/Input';
+// import {Input} from 'antd';
 import * as Yup from 'yup';
 import {yupResolver} from '@hookform/resolvers';
 import {useForm, Controller} from 'react-hook-form';
 
 export const Add = inject('notesStore')(
   observer(props => {
-    const {_id} = props;
     const {item} = props.notesStore;
-    const category_id = props.category_id;
-    const history = useHistory();
-    const [noteForm, setNoteForm] = useState({
-      title: _id ? item.title : '',
-      text: _id ? item.text : '',
+
+    const schema = Yup.object().shape({
+      title: Yup.string().required('Title is required'),
+      text: Yup.string().required('Text is required'),
     });
 
-    const {title, text} = noteForm;
+    const {handleSubmit, errors, control, reset} = useForm({
+      resolver: yupResolver(schema),
+    });
 
-    console.log({_id, item, noteForm});
+    const {_id} = props;
+    const category_id = props.category_id;
+    const history = useHistory();
 
     useEffect(() => {
       if (_id) {
@@ -31,7 +34,12 @@ export const Add = inject('notesStore')(
 
     //TODO whaaat?
     useEffect(() => {
-      if (item._id) setNoteForm({title: item.title, text: item.text});
+      if (item._id && _id === item._id) {
+        reset({
+          title: item.title,
+          text: item.text,
+        });
+      }
     }, [item]);
 
     const handleCancel = () => {
@@ -50,19 +58,9 @@ export const Add = inject('notesStore')(
       }
     };
 
-    const schema = Yup.object().shape({
-      title: Yup.string().required('Title is required'),
-
-      text: Yup.string().required('Text is required'),
-    });
-
-    const {handleSubmit, errors, control, reset, watch} = useForm({
-      resolver: yupResolver(schema),
-    });
-
     return (
       <Modal
-        visible={true}
+        visible={item._id === _id}
         onOk={handleSubmit(onSubmit)}
         onCancel={handleCancel}
         okText={_id ? 'Edit Note' : 'Add Note'}
@@ -71,29 +69,15 @@ export const Add = inject('notesStore')(
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
-              as={
-                <Input
-                  name="title"
-                  placeholder="Title"
-                  errors={errors}
-                  defaultValue={_id ? title : ''}
-                />
-              }
               name="title"
               control={control}
+              as={<Input name="title" placeholder="Title" errors={errors} />}
             />
 
             <Controller
-              as={
-                <Input
-                  name="text"
-                  placeholder="Text"
-                  errors={errors}
-                  defaultValue={_id ? text : ''}
-                />
-              }
               name="text"
               control={control}
+              as={<Input name="text" placeholder="Text" errors={errors} />}
             />
           </form>
         </div>

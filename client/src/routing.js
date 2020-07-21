@@ -20,7 +20,6 @@ export const routing = inject('authStore')(
     const {token} = props.authStore;
 
     useEffect(() => {
-      console.log('alo');
       props.authStore.handleAuth();
     });
     return token ? (

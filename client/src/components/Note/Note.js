@@ -1,11 +1,10 @@
 import React, {Fragment} from 'react';
 import {Link} from 'react-router-dom';
 import {inject, observer} from 'mobx-react';
-import {DeleteOutlined} from '@ant-design/icons';
+import {DeleteOutlined, PushpinOutlined} from '@ant-design/icons';
 import {request} from 'helpers/request';
 import {Modal, Card} from 'antd';
 import {ExclamationCircleOutlined} from '@ant-design/icons';
-import {GrNotes} from 'react-icons/all';
 
 export const Note = inject(
   'notesStore',
@@ -40,7 +39,7 @@ export const Note = inject(
           title={
             <Fragment>
               <div>
-                <GrNotes onClick={handleQuickNote} /> {title}
+                <PushpinOutlined style={{color: 'purple'}} onClick={handleQuickNote} /> {title}
               </div>
             </Fragment>
           }
@@ -54,7 +53,7 @@ export const Note = inject(
               </div>{' '}
             </Fragment>
           }
-          style={{margin: '2%', background: 'pink'}}
+          style={{margin: '2%', background: '#C4EDFE'}}
         >
           <p>{text}</p>
         </Card>

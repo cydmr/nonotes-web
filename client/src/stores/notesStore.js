@@ -18,7 +18,7 @@ export default class notesStore {
       this.state = 'getting';
       request.get(`/api/categories/${category_id}/notes/${_id}/`).then(res => {
         if (!res.data) return;
-        console.log(res.data);
+        console.log({get: res.data});
         this._item = res.data;
         this.state = 'done';
       });

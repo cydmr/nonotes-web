@@ -28,13 +28,19 @@ export default class authStore {
   }
 
   login(data) {
-    request.post('/api/auth', data, false).then(res => {
-      if (!res.data) return;
-      cookies.set('token', res.data.token, {maxAge: res.data.expires});
+    request
+      .post('/api/auth', data, false)
+      .then(res => {
+        // if (!res.data) return;
 
-      this.token = res.data.token;
-      this.authenticated = true;
-    });
+        cookies.set('token', res.data.token, {maxAge: res.data.expires});
+
+        this.token = res.data.token;
+        this.authenticated = true;
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   logout() {
